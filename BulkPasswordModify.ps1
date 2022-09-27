@@ -1,6 +1,8 @@
 ﻿# This Script is used to modify the password of all demo users in the Microsoft Customer Digital Experience (CDX) environment assigning 'Veeam123!' as the PW.
 
-Write-Host "Installing required Azure PowerShell module: AzureAd"
+# Note: The M365DemoUsers.csv must be in the same folder as this script.
+
+Write-Host "Installing required PowerShell module: AzureAd"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Find-PackageProvider -Name Nuget -ForceBootstrap -IncludeDependencies -Force | Out-Null
 # Determine if AzureAd module is already present
@@ -20,13 +22,13 @@ $Password = "Veeam123!"
 $SecurePass = $Password | ConvertTo-SecureString -AsPlainText -Force
 
 # Importing user list
-Import-Csv "M365DemoUsers.csv"
+$users = Import-Csv "M365DemoUsers.csv"
 
 # Looping through users
 foreach ($user in $users) {
     # Set user password
-    Get-AzureAdUser | where-object { $_.DisplayName.SubString(0, 7) -eq 'Student' } | Set-AzureADUserPassword -ObjectID $_.ObjectID -Password $SecurePass
+    Get-AzureAdUser | Where-Object { $_.UserPrincipalName -like $user.UserPrincipalName } | Set-AzureADUserPassword -ObjectID $_.ObjectID -Password $SecurePass
 }
 
 # Set Admin Password
-Get-AzureAdUser | where-object { $_.DisplayName -eq 'MOD Administrator' } | foreach { Set-AzureADUserPassword -ObjectID $_.ObjectID -Password $SecurePass }
+Get-AzureAdUser | Where-Object { $_.DisplayName -eq 'MOD Administrator' } | Set-AzureADUserPassword -ObjectID $_.ObjectID -Password $SecurePass

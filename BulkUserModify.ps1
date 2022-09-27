@@ -1,7 +1,7 @@
 ﻿##This will modify all users added to the CSV files listed below
 ##Verify the CSV files are in the correct location and named properly.
 
-Write-Host "Installing required Azure PowerShell module: MSOnline"
+Write-Host "Installing required PowerShell module: MSOnline"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Find-PackageProvider -Name Nuget -ForceBootstrap -IncludeDependencies -Force | Out-Null
 # Determine if MSOnline module is already present
