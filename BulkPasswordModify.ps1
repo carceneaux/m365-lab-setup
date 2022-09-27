@@ -23,17 +23,42 @@ $SecurePass = $Password | ConvertTo-SecureString -AsPlainText -Force
 
 # Importing user list
 $users = Import-Csv "M365DemoUsers.csv"
+Write-Host "Importing user list....$($users.count) users found!"
 
 # Looping through users
 foreach ($user in $users) {
-    # Retrieving user
-    $current = Get-AzureAdUser | Where-Object { $_.UserPrincipalName -like $user.UserPrincipalName }
-    # Setting user password
-    Set-AzureADUserPassword -ObjectID $current.ObjectID -Password $SecurePass
+    Write-Host "Setting password for: $($user.DisplayName)"
+    try {
+        # Retrieving user
+        $current = Get-AzureAdUser | Where-Object { $_.UserPrincipalName -like $user.UserPrincipalName }
+        if ($current){ 
+            # Setting user password
+            Set-AzureADUserPassword -ObjectID $current.ObjectID -Password $SecurePass
+        } else {
+            Write-Warning "User - $($user.DisplayName) - not found!"
+            throw
+        }
+    } catch {
+        Write-Error "Unable to change password for: $($user.DisplayName)"
+    }
 }
 
+#### keeping admin separate in case a different password is specified in the future ####
 # Set Admin Password
-$current = Get-AzureAdUser | Where-Object { $_.DisplayName -eq 'MOD Administrator' } | Set-AzureADUserPassword -ObjectID $_.ObjectID -Password $SecurePass
+Write-Host "Setting password for: MOD Administrator"
+try {
+    # Retrieving user
+    $current = Get-AzureAdUser | Where-Object { $_.DisplayName -eq 'MOD Administrator' }
+    if ($current){ 
+        # Setting user password
+        Set-AzureADUserPassword -ObjectID $current.ObjectID -Password $SecurePass
+    } else {
+        Write-Warning "User - MOD Administrator - not found!"
+        throw
+    }
+} catch {
+    Write-Error "Unable to change password for: MOD Administrator"
+}
 
 # Disconnecting from Azure
 Disconnect-AzureAD
