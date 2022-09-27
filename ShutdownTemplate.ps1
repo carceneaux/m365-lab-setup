@@ -9,5 +9,8 @@ Timeout /NoBreak 10
 # Clearing PowerShell history
 Remove-Item (Get-PSReadlineOption).HistorySavePath
 
+# Empty Recycle Bin
+Clear-RecycleBin -Force
+
 # Shuts down computer
 Stop-Computer
