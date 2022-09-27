@@ -34,3 +34,6 @@ foreach ($user in $users) {
 
 # Set Admin Password
 $current = Get-AzureAdUser | Where-Object { $_.DisplayName -eq 'MOD Administrator' } | Set-AzureADUserPassword -ObjectID $_.ObjectID -Password $SecurePass
+
+# Disconnecting from Azure
+Disconnect-AzureAD
