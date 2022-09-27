@@ -27,7 +27,7 @@ Write-Host "Importing user list....$($users.count) users found!"
 
 # Looping through users
 foreach ($user in $users) {
-    Write-Host "Setting password for: $($user.DisplayName)"
+    Write-Host "Setting password for: $($user.UserPrincipalName)"
     try {
         # Retrieving user
         $current = Get-AzureAdUser | Where-Object { $_.UserPrincipalName -like $user.UserPrincipalName }
@@ -35,11 +35,11 @@ foreach ($user in $users) {
             # Setting user password
             Set-AzureADUserPassword -ObjectID $current.ObjectID -Password $SecurePass
         } else {
-            Write-Warning "User - $($user.DisplayName) - not found!"
+            Write-Warning "User - $($user.UserPrincipalName) - not found!"
             throw
         }
     } catch {
-        Write-Error "Unable to change password for: $($user.DisplayName)"
+        Write-Error "Unable to change password for: $($user.UserPrincipalName)"
     }
 }
 
