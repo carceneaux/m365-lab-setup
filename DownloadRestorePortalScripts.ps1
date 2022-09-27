@@ -1,5 +1,8 @@
 # Downloads restore portal scripts
 
+# Deletes restore portal scripts folder in case it already exists
+Remove-Item "C:\Users\Administrator\Desktop\Restore Portal Scripts" -Recurse
+
 # Change director to Administrator's desktop
 Set-Location -Path "C:\Users\Administrator\Desktop"
 
