@@ -22,13 +22,16 @@ $Password = "Veeam123!"
 $SecurePass = $Password | ConvertTo-SecureString -AsPlainText -Force
 
 # Importing user list
-$users = Import-Csv "M365DemoUsers.csv"
+$users = Import-Csv "M365DemoUsers.csv" | Out-Null
 
 # Looping through users
 foreach ($user in $users) {
-    # Set user password
-    Get-AzureAdUser | Where-Object { $_.UserPrincipalName -like $user.UserPrincipalName } | Set-AzureADUserPassword -ObjectID $_.ObjectID -Password $SecurePass
+    # Retrieving user
+    $current = Get-AzureAdUser | Where-Object { $_.UserPrincipalName -like $user.UserPrincipalName }
+    # Setting user password
+    Set-AzureADUserPassword -ObjectID $current.ObjectID -Password $SecurePass
 }
 
 # Set Admin Password
-Get-AzureAdUser | Where-Object { $_.DisplayName -eq 'MOD Administrator' } | Set-AzureADUserPassword -ObjectID $_.ObjectID -Password $SecurePass
+$current = Get-AzureAdUser | Where-Object { $_.DisplayName -eq 'MOD Administrator' }
+Set-AzureADUserPassword -ObjectID $current.ObjectID -Password $SecurePass
