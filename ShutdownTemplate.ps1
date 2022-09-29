@@ -6,6 +6,9 @@ Write-Host "WARNING: This script powers off this computer." -ForegroundColor Yel
 Write-Host "If you do not want to do this, please quit." -ForegroundColor Yellow
 Timeout /NoBreak 10
 
+# Making sure most recent restore portal scripts are present
+.\DownloadRestorePortalScripts.ps1
+
 # Clearing PowerShell history
 Remove-Item (Get-PSReadlineOption).HistorySavePath
 
